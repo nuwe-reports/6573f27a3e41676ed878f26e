@@ -99,18 +99,18 @@ class AppointmentControllerUnitTest{
 
         Appointment appointment = new Appointment(patient, doctor, room, startsAt, finishesAt);
         Appointment appointment2 = new Appointment(patient2, doctor2, room, startsAt, finishesAt);
-
+        
 
         mockMvc.perform(post("/api/appointment").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(appointment)))
                 .andExpect(status().isOk());
-
+                
 
 
 
         List<Appointment> appointments = new ArrayList<Appointment>();
         appointments.add(appointment);
-
+        
         when(appointmentRepository.findAll()).thenReturn(appointments);
         mockMvc.perform(post("/api/appointment").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(appointment2)))
@@ -143,13 +143,13 @@ class AppointmentControllerUnitTest{
         mockMvc.perform(post("/api/appointment").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(appointment)))
                 .andExpect(status().isOk());
-
+                
 
 
 
         List<Appointment> appointments = new ArrayList<Appointment>();
         appointments.add(appointment);
-
+        
         when(appointmentRepository.findAll()).thenReturn(appointments);
         mockMvc.perform(post("/api/appointment").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(appointment2)))
