@@ -8,6 +8,7 @@ import java.util.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,10 +50,11 @@ public class AppointmentController {
     }
 
     @PostMapping("/appointment")
-    public ResponseEntity<List<Appointment>> createAppointment(@RequestBody Appointment appointment){
+    public ResponseEntity<List<Appointment>> createAppointment(@RequestBody @Validated Appointment appointment){
 
-        if (appointment.getStartsAt().isEqual(appointment.getFinishesAt()))
+        if (appointment.getStartsAt().isEqual(appointment.getFinishesAt())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         List<Appointment> appointments = appointmentRepository.findAll();
         if (appointments.stream().anyMatch(a -> a.overlaps(appointment))) {
@@ -61,9 +63,9 @@ public class AppointmentController {
 
         if (appointmentRepository.findById(appointment.getId()).isPresent()) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
-        } else {
-            return new ResponseEntity<>(Collections.singletonList(appointmentRepository.save(appointment)), HttpStatus.OK);
         }
+
+        return new ResponseEntity<>(Collections.singletonList(appointmentRepository.save(appointment)), HttpStatus.OK);
     }
 
 
