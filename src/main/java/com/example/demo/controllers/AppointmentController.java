@@ -5,11 +5,9 @@ import com.example.demo.entities.*;
 
 import java.util.*;
 
-import com.sun.istack.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,8 +27,9 @@ public class AppointmentController {
 
     @GetMapping("/appointments")
     public ResponseEntity<List<Appointment>> getAllAppointments(){
+        List<Appointment> appointments = new ArrayList<>();
 
-        List<Appointment> appointments = new ArrayList<>(appointmentRepository.findAll());
+        appointmentRepository.findAll().forEach(appointments::add);
 
         if (appointments.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -51,7 +50,7 @@ public class AppointmentController {
     }
 
     @PostMapping("/appointment")
-    public ResponseEntity<List<Appointment>> createAppointment(@RequestBody @NotNull Appointment appointment){
+    public ResponseEntity<List<Appointment>> createAppointment(@RequestBody @Validated Appointment appointment){
 
         if (appointment.getStartsAt().isEqual(appointment.getFinishesAt())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
