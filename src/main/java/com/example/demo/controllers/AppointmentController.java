@@ -9,7 +9,6 @@ import java.util.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,7 +55,7 @@ public class AppointmentController {
     }
 
     @PostMapping("/appointment")
-    public ResponseEntity<List<Appointment>> createAppointment(@RequestBody @Validated AppointmentDto app){
+    public ResponseEntity<List<Appointment>> createAppointment(@RequestBody AppointmentDto app){
 
         Patient patient = new Patient(app.getPatient().getFirstName(), app.getPatient().getLastName(), app.getPatient().getAge(), app.getPatient().getEmail());
         Doctor doctor = new Doctor(app.getDoctor().getFirstName(), app.getDoctor().getLastName(), app.getDoctor().getAge(), app.getDoctor().getEmail());
