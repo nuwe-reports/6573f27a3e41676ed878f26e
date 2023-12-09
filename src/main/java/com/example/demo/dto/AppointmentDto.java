@@ -1,6 +1,7 @@
 package com.example.demo.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.sun.istack.NotNull;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -10,8 +11,14 @@ import java.time.LocalDateTime;
  */
 public class AppointmentDto implements Serializable {
     private long id;
+
+    @NotNull
     private PatientDto patient;
+
+    @NotNull
     private DoctorDto doctor;
+
+    @NotNull
     private RoomDto room;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm dd/MM/yyyy")
     private LocalDateTime startsAt;
