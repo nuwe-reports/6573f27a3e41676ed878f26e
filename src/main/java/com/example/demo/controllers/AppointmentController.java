@@ -1,6 +1,5 @@
 package com.example.demo.controllers;
 
-import com.example.demo.dto.AppointmentDto;
 import com.example.demo.repositories.*;
 import com.example.demo.entities.*;
 
@@ -56,12 +55,7 @@ public class AppointmentController {
     }
 
     @PostMapping("/appointment")
-    public ResponseEntity<List<Appointment>> createAppointment(@RequestBody AppointmentDto app){
-
-        Patient patient = new Patient(app.getPatient().getFirstName(), app.getPatient().getLastName(), app.getPatient().getAge(), app.getPatient().getEmail());
-        Doctor doctor = new Doctor(app.getDoctor().getFirstName(), app.getDoctor().getLastName(), app.getDoctor().getAge(), app.getDoctor().getEmail());
-        Room room = new Room(app.getRoom().getRoomName());
-        Appointment appointment = new Appointment(patient, doctor, room, app.getStartsAt(), app.getFinishesAt());
+    public ResponseEntity<List<Appointment>> createAppointment(@RequestBody @Validated Appointment appointment){
 
         if (appointment.getStartsAt().isEqual(appointment.getFinishesAt())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
