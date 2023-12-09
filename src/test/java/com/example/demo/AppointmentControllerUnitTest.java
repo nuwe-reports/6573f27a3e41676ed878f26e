@@ -1,36 +1,30 @@
 package com.example.demo;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import java.time.LocalDateTime;
-import java.time.format.*;
-
+import com.example.demo.controllers.AppointmentController;
+import com.example.demo.dto.AppointmentDto;
+import com.example.demo.entities.Appointment;
+import com.example.demo.entities.Doctor;
+import com.example.demo.entities.Patient;
+import com.example.demo.entities.Room;
+import com.example.demo.repositories.AppointmentRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
-import com.example.demo.controllers.AppointmentController;
-import com.example.demo.repositories.*;
-import com.example.demo.entities.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AppointmentController.class)
 class AppointmentControllerUnitTest{
@@ -56,10 +50,12 @@ class AppointmentControllerUnitTest{
         LocalDateTime startsAt= LocalDateTime.parse("19:30 24/04/2023", formatter);
         LocalDateTime finishesAt = LocalDateTime.parse("20:30 24/04/2023", formatter);
 
-        Appointment appointment = new Appointment(patient, doctor, room, startsAt, finishesAt);
-
+        AppointmentDto.PatientDto patientDto = new AppointmentDto.PatientDto(patient.getFirstName(), patient.getLastName(), patient.getAge(), patient.getEmail(), 0);
+        AppointmentDto.DoctorDto doctorDto = new AppointmentDto.DoctorDto(doctor.getFirstName(), doctor.getLastName(), doctor.getAge(), doctor.getEmail(), 0);
+        AppointmentDto.RoomDto roomDto = new AppointmentDto.RoomDto(room.getRoomName());
+        AppointmentDto appointmentDto = new AppointmentDto(0, patientDto, doctorDto, roomDto, startsAt, finishesAt);
         mockMvc.perform(post("/api/appointment").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(appointment)))
+                .content(objectMapper.writeValueAsString(appointmentDto)))
                 .andExpect(status().isOk());
                 
     }
@@ -76,10 +72,13 @@ class AppointmentControllerUnitTest{
         LocalDateTime startsAt= LocalDateTime.parse("19:30 24/04/2023", formatter);
         LocalDateTime finishesAt = LocalDateTime.parse("19:30 24/04/2023", formatter);
 
-        Appointment appointment = new Appointment(patient, doctor, room, startsAt, finishesAt);
+        AppointmentDto.PatientDto patientDto = new AppointmentDto.PatientDto(patient.getFirstName(), patient.getLastName(), patient.getAge(), patient.getEmail(), 0);
+        AppointmentDto.DoctorDto doctorDto = new AppointmentDto.DoctorDto(doctor.getFirstName(), doctor.getLastName(), doctor.getAge(), doctor.getEmail(), 0);
+        AppointmentDto.RoomDto roomDto = new AppointmentDto.RoomDto(room.getRoomName());
+        AppointmentDto appointmentDto = new AppointmentDto(0, patientDto, doctorDto, roomDto, startsAt, finishesAt);
 
         mockMvc.perform(post("/api/appointment").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(appointment)))
+                .content(objectMapper.writeValueAsString(appointmentDto)))
                 .andExpect(status().isBadRequest());
 
     }
@@ -98,22 +97,29 @@ class AppointmentControllerUnitTest{
         LocalDateTime finishesAt = LocalDateTime.parse("20:30 24/04/2023", formatter);
 
         Appointment appointment = new Appointment(patient, doctor, room, startsAt, finishesAt);
-        Appointment appointment2 = new Appointment(patient2, doctor2, room, startsAt, finishesAt);
-        
+
+        AppointmentDto.PatientDto patientDto = new AppointmentDto.PatientDto(patient.getFirstName(), patient.getLastName(), patient.getAge(), patient.getEmail(), 0);
+        AppointmentDto.DoctorDto doctorDto = new AppointmentDto.DoctorDto(doctor.getFirstName(), doctor.getLastName(), doctor.getAge(), doctor.getEmail(), 0);
+        AppointmentDto.RoomDto roomDto = new AppointmentDto.RoomDto(room.getRoomName());
+        AppointmentDto appointmentDto = new AppointmentDto(0, patientDto, doctorDto, roomDto, startsAt, finishesAt);
+
 
         mockMvc.perform(post("/api/appointment").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(appointment)))
+                .content(objectMapper.writeValueAsString(appointmentDto)))
                 .andExpect(status().isOk());
-                
-
-
 
         List<Appointment> appointments = new ArrayList<Appointment>();
         appointments.add(appointment);
-        
+
+        AppointmentDto.PatientDto patient2Dto = new AppointmentDto.PatientDto(patient2.getFirstName(), patient2.getLastName(), patient2.getAge(), patient2.getEmail(), 0);
+        AppointmentDto.DoctorDto doctor2Dto = new AppointmentDto.DoctorDto(doctor2.getFirstName(), doctor2.getLastName(), doctor2.getAge(), doctor2.getEmail(), 0);
+        AppointmentDto.RoomDto room2Dto = new AppointmentDto.RoomDto(room.getRoomName());
+        AppointmentDto appointment2Dto = new AppointmentDto(0, patient2Dto, doctor2Dto, room2Dto, startsAt, finishesAt);
+
+
         when(appointmentRepository.findAll()).thenReturn(appointments);
         mockMvc.perform(post("/api/appointment").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(appointment2)))
+                .content(objectMapper.writeValueAsString(appointment2Dto)))
                 .andExpect(status().isNotAcceptable());
                 
 
@@ -138,21 +144,27 @@ class AppointmentControllerUnitTest{
         patient2.setId(2);
 
         Appointment appointment = new Appointment(patient, doctor, room, startsAt, finishesAt);
-        Appointment appointment2 = new Appointment(patient2, doctor2, room2, startsAt, finishesAt);
+
+        AppointmentDto.PatientDto patientDto = new AppointmentDto.PatientDto(patient.getFirstName(), patient.getLastName(), patient.getAge(), patient.getEmail(), 0);
+        AppointmentDto.DoctorDto doctorDto = new AppointmentDto.DoctorDto(doctor.getFirstName(), doctor.getLastName(), doctor.getAge(), doctor.getEmail(), 0);
+        AppointmentDto.RoomDto roomDto = new AppointmentDto.RoomDto(room.getRoomName());
+        AppointmentDto appointmentDto = new AppointmentDto(0, patientDto, doctorDto, roomDto, startsAt, finishesAt);
 
         mockMvc.perform(post("/api/appointment").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(appointment)))
+                .content(objectMapper.writeValueAsString(appointmentDto)))
                 .andExpect(status().isOk());
-                
-
-
 
         List<Appointment> appointments = new ArrayList<Appointment>();
         appointments.add(appointment);
-        
+
+        AppointmentDto.PatientDto patient2Dto = new AppointmentDto.PatientDto(patient2.getFirstName(), patient2.getLastName(), patient2.getAge(), patient2.getEmail(), patient2.getId());
+        AppointmentDto.DoctorDto doctor2Dto = new AppointmentDto.DoctorDto(doctor2.getFirstName(), doctor2.getLastName(), doctor2.getAge(), doctor2.getEmail(), doctor2.getId());
+        AppointmentDto.RoomDto room2Dto = new AppointmentDto.RoomDto(room2.getRoomName());
+        AppointmentDto appointment2Dto = new AppointmentDto(0, patient2Dto, doctor2Dto, room2Dto, startsAt, finishesAt);
+
         when(appointmentRepository.findAll()).thenReturn(appointments);
         mockMvc.perform(post("/api/appointment").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(appointment2)))
+                .content(objectMapper.writeValueAsString(appointment2Dto)))
                 .andExpect(status().isOk());
                 
 
