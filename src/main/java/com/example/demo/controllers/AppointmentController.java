@@ -56,7 +56,7 @@ public class AppointmentController {
     }
 
     @PostMapping("/appointment")
-    public ResponseEntity<List<Appointment>> createAppointment(@RequestBody @Validated AppointmentDto app){
+    public ResponseEntity<List<Appointment>> createAppointment(@RequestBody AppointmentDto app){
 
         Patient patient = new Patient(app.getPatient().getFirstName(), app.getPatient().getLastName(), app.getPatient().getAge(), app.getPatient().getEmail());
         Doctor doctor = new Doctor(app.getDoctor().getFirstName(), app.getDoctor().getLastName(), app.getDoctor().getAge(), app.getDoctor().getEmail());
