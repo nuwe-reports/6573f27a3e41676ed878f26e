@@ -47,20 +47,22 @@ class EntityUnitTest {
     @Test
     void patientTest() {
 
-        assertThat(p1.getAge()).isEqualTo(37);
-        assertThat(p1.getEmail()).isEqualTo("j.olaya@email.com");
-        assertThat(p1.getFirstName()).isEqualTo("Jose Luis");
-        assertThat(p1.getLastName()).isEqualTo("Olaya");
+        assertThat(p1)
+                .hasFieldOrPropertyWithValue("age", 37)
+                .hasFieldOrPropertyWithValue("email", "j.olaya@email.com")
+                .hasFieldOrPropertyWithValue("firstName", "Jose Luis")
+                .hasFieldOrPropertyWithValue("lastName", "Olaya");
 
         p1.setAge(38);
         p1.setEmail("test@test.it");
         p1.setFirstName("Pippo");
         p1.setLastName("Baudo");
 
-        assertThat(p1.getAge()).isEqualTo(38);
-        assertThat(p1.getEmail()).isEqualTo("test@test.it");
-        assertThat(p1.getFirstName()).isEqualTo("Pippo");
-        assertThat(p1.getLastName()).isEqualTo("Baudo");
+        assertThat(p1)
+                .hasFieldOrPropertyWithValue("age", 38)
+                .hasFieldOrPropertyWithValue("email", "test@test.it")
+                .hasFieldOrPropertyWithValue("firstName", "Pippo")
+                .hasFieldOrPropertyWithValue("lastName", "Baudo");
 
 
         p1 = entityManager.persistAndFlush(p1);
@@ -72,20 +74,22 @@ class EntityUnitTest {
     @Test
     void doctorTest() {
 
-        assertThat(d1.getAge()).isEqualTo(24);
-        assertThat(d1.getEmail()).isEqualTo("p.amalia@hospital.accwe");
-        assertThat(d1.getFirstName()).isEqualTo("Perla");
-        assertThat(d1.getLastName()).isEqualTo("Amalia");
+        assertThat(d1)
+                .hasFieldOrPropertyWithValue("age", 24)
+                .hasFieldOrPropertyWithValue("email", "p.amalia@hospital.accwe")
+                .hasFieldOrPropertyWithValue("firstName", "Perla")
+                .hasFieldOrPropertyWithValue("lastName", "Amalia");
 
         d1.setAge(38);
         d1.setEmail("test@test.it");
         d1.setFirstName("Pippo");
         d1.setLastName("Baudo");
 
-        assertThat(d1.getAge()).isEqualTo(38);
-        assertThat(d1.getEmail()).isEqualTo("test@test.it");
-        assertThat(d1.getFirstName()).isEqualTo("Pippo");
-        assertThat(d1.getLastName()).isEqualTo("Baudo");
+        assertThat(d1)
+                .hasFieldOrPropertyWithValue("age", 38)
+                .hasFieldOrPropertyWithValue("email", "test@test.it")
+                .hasFieldOrPropertyWithValue("firstName", "Pippo")
+                .hasFieldOrPropertyWithValue("lastName", "Baudo");
 
         d1 = entityManager.persistAndFlush(d1);
         Long id = d1.getId();
@@ -114,9 +118,10 @@ class EntityUnitTest {
 
         a1 = new Appointment(p1, d1, r1, startsAt, finishesAt);
 
-        assertThat(a1.getPatient()).isEqualTo(p1);
-        assertThat(a1.getDoctor()).isEqualTo(d1);
-        assertThat(a1.getRoom()).isEqualTo(r1);
+        assertThat(a1)
+                .hasFieldOrPropertyWithValue("patient", p1)
+                .hasFieldOrPropertyWithValue("doctor", d1)
+                .hasFieldOrPropertyWithValue("room", r1);
 
         Patient p2 = new Patient("New FirstName", "Olaya", 37, "j.olaya@email.com");
         Doctor d2 = new Doctor ("New FirstName", "Amalia", 24, "p.amalia@hospital.accwe");
