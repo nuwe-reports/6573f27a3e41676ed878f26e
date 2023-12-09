@@ -3,9 +3,7 @@ package com.example.demo.controllers;
 import com.example.demo.repositories.*;
 import com.example.demo.entities.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,11 +50,20 @@ public class AppointmentController {
 
     @PostMapping("/appointment")
     public ResponseEntity<List<Appointment>> createAppointment(@RequestBody Appointment appointment){
-        /** TODO 
-         * Implement this function, which acts as the POST /api/appointment endpoint.
-         * Make sure to check out the whole project. Specially the Appointment.java class
-         */
-        return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+
+        if (appointment.getStartsAt().isEqual(appointment.getFinishesAt()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<Appointment> appointments = appointmentRepository.findAll();
+        if (appointments.stream().anyMatch(a -> a.overlaps(appointment))) {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        if (appointmentRepository.findById(appointment.getId()).isPresent()) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        } else {
+            return new ResponseEntity<>(Collections.singletonList(appointmentRepository.save(appointment)), HttpStatus.OK);
+        }
     }
 
 
