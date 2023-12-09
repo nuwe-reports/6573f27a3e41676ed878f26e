@@ -11,6 +11,7 @@ import com.example.demo.repositories.DoctorRepository;
 import com.example.demo.repositories.PatientRepository;
 import com.example.demo.repositories.RoomRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -40,9 +41,15 @@ class DoctorControllerUnitTest{
     @Autowired
     private ObjectMapper objectMapper;
 
+    static private Doctor doctor;
+
+    @BeforeAll
+    static void setUp(){
+        doctor = new Doctor ("Perla", "Amalia", 24, "p.amalia@hospital.accwe");
+    }
+
     @Test
     void shouldGetDoctorById() throws Exception {
-        Doctor doctor = new Doctor ("Perla", "Amalia", 24, "p.amalia@hospital.accwe");
 
         Optional<Doctor> opt = Optional.of(doctor);
         when(doctorRepository.findById(doctor.getId())).thenReturn(opt);
@@ -52,10 +59,9 @@ class DoctorControllerUnitTest{
 
     @Test
     void shouldGetTwoDoctor() throws Exception {
-        Doctor doctor1 = new Doctor ("Perla", "Amalia", 24, "p.amalia@hospital.accwe");
         Doctor doctor2 = new Doctor ("Pippo", "Baudo", 29, "b.pippo@hospital.accwe");
         List<Doctor> doctorList = new ArrayList<>();
-        doctorList.add(doctor1);
+        doctorList.add(doctor);
         doctorList.add(doctor2);
 
         when(doctorRepository.findAll()).thenReturn(doctorList);
@@ -73,7 +79,6 @@ class DoctorControllerUnitTest{
 
     @Test
     void shouldCreateDoctor() throws Exception {
-        Doctor doctor = new Doctor ("Perla", "Amalia", 24, "p.amalia@hospital.accwe");
         mockMvc.perform(post("/api/doctor").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(doctor)))
                 .andExpect(status().isCreated());
@@ -81,7 +86,6 @@ class DoctorControllerUnitTest{
 
     @Test
     void shouldDeleteDoctor() throws Exception {
-        Doctor doctor = new Doctor ("Perla", "Amalia", 24, "p.amalia@hospital.accwe");
         Optional<Doctor> opt = Optional.of(doctor);
         when(doctorRepository.findById(doctor.getId())).thenReturn(opt);
         mockMvc.perform(delete("/api/doctors/" + doctor.getId()))
@@ -90,10 +94,9 @@ class DoctorControllerUnitTest{
 
     @Test
     void shouldDeleteAllDoctors() throws Exception {
-        Doctor doctor1 = new Doctor ("Perla", "Amalia", 24, "p.amalia@hospital.accwe");
         Doctor doctor2 = new Doctor ("Pippo", "Baudo", 29, "b.pippo@hospital.accwe");
         List<Doctor> doctorList = new ArrayList<>();
-        doctorList.add(doctor1);
+        doctorList.add(doctor);
         doctorList.add(doctor2);
 
         when(doctorRepository.findAll()).thenReturn(doctorList);
@@ -115,9 +118,15 @@ class PatientControllerUnitTest{
     @Autowired
     private ObjectMapper objectMapper;
 
+    static private Patient patient;
+
+    @BeforeAll
+    static void setUp() {
+        patient = new Patient("Jose Luis", "Olaya", 37, "j.olaya@email.com");
+    }
+
     @Test
     void shouldGetPatientById() throws Exception {
-        Patient patient = new Patient("Jose Luis", "Olaya", 37, "j.olaya@email.com");
 
         Optional<Patient> opt = Optional.of(patient);
         when(patientRepository.findById(patient.getId())).thenReturn(opt);
@@ -135,7 +144,6 @@ class PatientControllerUnitTest{
 
     @Test
     void shouldCreatePatient() throws Exception {
-        Patient patient = new Patient("Jose Luis", "Olaya", 37, "j.olaya@email.com");
         mockMvc.perform(post("/api/patient").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(patient)))
                 .andExpect(status().isCreated());
@@ -143,7 +151,6 @@ class PatientControllerUnitTest{
 
     @Test
     void shouldDeletePatient() throws Exception {
-        Patient patient = new Patient("Jose Luis", "Olaya", 37, "j.olaya@email.com");
         Optional<Patient> opt = Optional.of(patient);
         when(patientRepository.findById(patient.getId())).thenReturn(opt);
         mockMvc.perform(delete("/api/patients/" + patient.getId()))
@@ -164,10 +171,15 @@ class RoomControllerUnitTest{
     @Autowired
     private ObjectMapper objectMapper;
 
+    static private Room room;
+
+    @BeforeAll
+    static void setUp(){
+        room = new Room("Dermatology");
+    }
+
     @Test
     void shouldGetRoomByRoomName() throws Exception {
-        Room room = new Room("Dermatology");
-
         Optional<Room> opt = Optional.of(room);
         when(roomRepository.findByRoomName(room.getRoomName())).thenReturn(opt);
         mockMvc.perform(get("/api/rooms/" + room.getRoomName()))
@@ -176,10 +188,9 @@ class RoomControllerUnitTest{
 
     @Test
     void shouldGetTwoRoom() throws Exception {
-        Room room1 = new Room("Dermatology");
         Room room2 = new Room("NewRoomName");
         List<Room> roomList = new ArrayList<>();
-        roomList.add(room1);
+        roomList.add(room);
         roomList.add(room2);
 
         when(roomRepository.findAll()).thenReturn(roomList);
@@ -197,7 +208,6 @@ class RoomControllerUnitTest{
 
     @Test
     void shouldCreateRoom() throws Exception {
-        Room room = new Room("Dermatology");
         mockMvc.perform(post("/api/room").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(room)))
                 .andExpect(status().isCreated());
@@ -205,7 +215,6 @@ class RoomControllerUnitTest{
 
     @Test
     void shouldDeleteRoom() throws Exception {
-        Room room = new Room("Dermatology");
         Optional<Room> opt = Optional.of(room);
         when(roomRepository.findByRoomName(room.getRoomName())).thenReturn(opt);
         mockMvc.perform(delete("/api/rooms/" + room.getRoomName()))
@@ -214,10 +223,9 @@ class RoomControllerUnitTest{
 
     @Test
     void shouldDeleteAllRoom() throws Exception {
-        Room room1 = new Room("Dermatology");
         Room room2 = new Room("NewRoomName");
         List<Room> roomList = new ArrayList<>();
-        roomList.add(room1);
+        roomList.add(room);
         roomList.add(room2);
         when(roomRepository.findAll()).thenReturn(roomList);
         mockMvc.perform(delete("/api/rooms"))
